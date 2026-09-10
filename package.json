@@ -33,7 +33,7 @@
     "listing:import": "node scripts/listing-import.mjs"
   },
   "dependencies": {
-    "three": "0.180.0"
+    "three": "0.185.1"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "2.0.0",

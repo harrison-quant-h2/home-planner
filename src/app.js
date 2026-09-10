@@ -5,6 +5,8 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { CATALOG } from './catalog.js';
 import { makeFurniture, disposeGroup, label } from './furniture.js';
 import { buildHouse, projectBounds } from './architecture.js';
+import { createReferencePanel } from './reference-panel.js';
+import { ReferenceViews } from './reference-views.js';
 import {
   assessItem,
   furnitureFootprint,
@@ -26,6 +28,8 @@ import {
   layoutChanged,
   storageKey,
   History,
+  captureEdits,
+  restoreEdits,
 } from './state.js';
 
 const $ = (id) => document.getElementById(id),
@@ -103,6 +107,25 @@ const clipping = new T.Plane(new T.Vector3(0, -1, 0), 3.8);
 const furniture = new T.Group(),
   selection = new T.Group();
 scene.add(selection);
+const referenceViews = new ReferenceViews(scene, (message) =>
+  referencePanel.report(message),
+);
+const referencePanel = createReferencePanel({
+  getProject: () => project,
+  commit: (next) => {
+    const validated = validateProject(next);
+    remember();
+    project = validated;
+    refreshReferences();
+    autosave();
+  },
+  openLayout: (next) => openProject(next),
+  refreshViews: () => refreshReferences(),
+});
+function refreshReferences() {
+  referencePanel.render();
+  referenceViews.update(project, referencePanel.enabled, mode);
+}
 function installHouse() {
   if (house) {
     house.root.remove(furniture);
@@ -235,6 +258,7 @@ function renderFurniture() {
   refreshList();
   autosave();
   drawSelection();
+  refreshReferences();
 }
 function refreshList() {
   const select = $('furniture-list');
@@ -244,7 +268,7 @@ function refreshList() {
   $('item-count').textContent = String(project.items.length);
 }
 function remember() {
-  history.push(project.items);
+  history.push(captureEdits(project));
 }
 function changeItem(next) {
   if (!validItems([next])) {
@@ -460,9 +484,9 @@ $('delete').onclick = () => {
 $('deselect').onclick = () => choose(null);
 for (const action of ['undo', 'redo'])
   $(action).onclick = () => {
-    const restored = history[action](project.items);
+    const restored = history[action](captureEdits(project));
     if (restored) {
-      project.items = restored;
+      project = restoreEdits(project, restored);
       choose(null);
       renderFurniture();
       toast(
@@ -801,7 +825,7 @@ $('reset-layout').onclick = () => {
   if (!checkpoint || saving) return;
   const restored = restoreSnapshot(checkpoint);
   remember();
-  project.items = restored.project.items;
+  project = restoreEdits(project, captureEdits(restored.project));
   choose(null);
   renderFurniture();
   restoreView(restored.view);
@@ -826,6 +850,7 @@ $('download-project').onclick = () => {
 function openProject(next, view = null) {
   autosave();
   project = validateProject(next);
+  referencePanel.reset();
   key = storageKey(project);
   starter = structuredClone(project.items);
   saveStarter();
@@ -994,7 +1019,7 @@ try {
   if (draft) {
     const restored = restoreSnapshot(draft);
     if (storageKey(restored.project) === key) {
-      project.items = restored.project.items;
+      project = restoreEdits(project, captureEdits(restored.project));
       draftView = restored.view;
     }
   }
@@ -1010,6 +1035,7 @@ function frame(now) {
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
   walk(dt);
+  referenceViews.group.visible = mode !== 'plan';
   if (mode !== 'walk') controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(frame);

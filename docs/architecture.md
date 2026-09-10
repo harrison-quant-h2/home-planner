@@ -1,6 +1,6 @@
 # Architecture
 
-Home Planner is a static ES-module application. Vite develops and bundles it; Three.js renders procedural geometry. There is no application server or network persistence layer.
+Home Planner is a static ES-module application. Vite develops and bundles it; Three.js renders procedural geometry. An optional local Vite middleware connects to a configured MCP property tool. There is no production application server or network persistence layer.
 
 | Module            | Responsibility                                                                                              |
 | ----------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -31,9 +31,13 @@ Fit calculations remain approximate. Most furniture is represented by outer enve
 
 ## Persistence
 
+Listing data flows through `listing-import.js` (bounded provider adapter), `references.js` (pure source/image/binding validation), and `reference-panel.js` (staged review and explicit assignments). `reference-views.js` renders separate disposable photo planes with CORS, center cropping, and generation checks against stale image callbacks. These planes are outside the house export and collision groups. Images remain unloaded until requested in the current session.
+
+The optional `server/zillow-mcp.js` uses the official MCP client with Streamable HTTP. Only the configured property tool can be called; requests send the address alone. `pnpm dev:zillow` enables the loopback middleware, with same-origin checks, bearer credentials held in the Node process, no redirects, and bounded tool discovery/timeouts. It is absent from the static deployment. `scripts/listing-import.mjs` supports agent-host results without any server or remote fetch. See [connection details](zillow-mcp.md).
+
 Snapshots are deep copies taken before asynchronous persistence. The in-memory checkpoint updates only after its write succeeds. Draft writes never replace it. Storage keys combine a versioned prefix, project id, and a non-cryptographic fingerprint of architecture. This fingerprint provides accidental namespace separation, not a security or content-addressing guarantee.
 
-All import text is rendered through DOM text APIs. Geometry is bounded before scene construction. Input validation and immutable state helpers can be tested without a browser or WebGL.
+All import text is rendered through DOM text APIs. Geometry is bounded before scene construction. Input validation and immutable state helpers can be tested without a browser or WebGL. Reference metadata is excluded from the architecture fingerprint, preserving existing v1 checkpoint keys; furniture and reference edits share immutable history and reset behavior.
 
 ## Rendering and cleanup
 

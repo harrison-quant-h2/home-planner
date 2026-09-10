@@ -24,11 +24,24 @@ export function layoutChanged(project, checkpoint) {
 }
 export function storageKey(project) {
   // Architecture changes cannot silently restore a checkpoint from a different floor plan.
-  const { items: _items, ...architecture } = project;
+  const { items: _items, references: _references, ...architecture } = project;
   let hash = 2166136261;
   for (const char of JSON.stringify(architecture))
     hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
   return `home-planner:v1:${project.id}:${(hash >>> 0).toString(16)}`;
+}
+export function captureEdits(project) {
+  return structuredClone({
+    items: project.items,
+    ...(project.references ? { references: project.references } : {}),
+  });
+}
+export function restoreEdits(project, edits) {
+  const next = structuredClone(project);
+  next.items = structuredClone(edits.items);
+  if (edits.references) next.references = structuredClone(edits.references);
+  else delete next.references;
+  return next;
 }
 export class History {
   constructor(limit = 40) {

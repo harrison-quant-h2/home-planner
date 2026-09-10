@@ -1,5 +1,11 @@
 # Using Home Planner
 
+## Bring listing photos into your model
+
+Open **References** to import Zillow listing JSON prepared by an agent, or use **Look up with MCP** with a configured local server. Review the source and image counts, then attach references to the current project. A supplied model layout has a separate action and includes its measurement basis. See the [connection guide](zillow-mcp.md).
+
+Choose **Load listing images**, select a photo, assign its room or window, and inspect it in **Walk through**. Switch the visible side if the image faces away from the room. Window photos are illustrative backdrops, not measured outdoor geometry. Room and window assignments support Undo, checkpoint Reset, and JSON backups. On reload, images stay hidden until you choose to load them again. GLB exports exclude listing photos.
+
 ## Arrange
 
 Click a piece in the scene or choose it from **Select a piece**. Dimensions use inches; X and Z positions use feet. Numeric changes apply when you leave the field. Dragging snaps to one inch unless **Snap 1″** is unchecked. A piece may be moved through or outside walls so you can experiment; warnings describe the current placement.

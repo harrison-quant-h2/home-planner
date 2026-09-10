@@ -8,6 +8,8 @@ Report exploitable issues privately through [GitHub's vulnerability reporting fo
 
 The production app is static. It has no backend, authentication, analytics, external model downloads, or upload endpoint. Imported JSON is parsed, validated, and held locally. Project names are rendered as text. Browser storage is scoped to the origin; it is not encrypted. A script or browser extension with access to that origin may read it. A deployed site's host receives ordinary web requests and may keep access logs.
 
+Optional listing references contain HTTPS image URLs. Loading images or opening source links contacts their hosts; the app does not fetch them automatically on import or reload. JSON exports contain those source URLs, which can include expiring signed query strings. Keep them private. The local `pnpm dev:zillow` bridge sends an entered address to one configured MCP tool and keeps bearer credentials in the server process. It is not included in the production bundle or suitable as a public proxy. See [Zillow MCP](docs/zillow-mcp.md) for configuration and limitations.
+
 Project downloads contain their complete architecture, furniture, notes, and camera view. PNG and GLB files can reveal the home. Share only what you intend to disclose. Clearing browser data removes drafts and checkpoints; downloaded files are the portable backup.
 
 The Vite development server serves source files and is intended for loopback development. Publish only the production `dist/` directory. Never put private plans or secrets in `public/`, because its contents are copied into the production build.

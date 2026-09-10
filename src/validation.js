@@ -1,4 +1,5 @@
 import { FURNITURE_TYPES } from './catalog.js';
+import { validateReferences } from './references.js';
 function validExtras(i) {
   if (i.type === 'desk' && i.tvMonitorIn !== undefined)
     return (
@@ -239,7 +240,10 @@ export function validateProject(p) {
       !p.notes.every((n) => text(n, 500)))
   )
     fail('At most 30 short project notes are supported.');
-  return structuredClone(p);
+  const copy = structuredClone(p);
+  if (p.references !== undefined)
+    copy.references = validateReferences(p.references, p);
+  return copy;
 }
 export function validView(v) {
   return (

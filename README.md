@@ -7,7 +7,7 @@
 
 ![Home Planner showing its fictional demo home, furniture library, and 3D furnishing controls](docs/preview.png)
 
-Arrange furniture at real scale, explore rooms at eye level, and return to a saved arrangement when an experiment doesn't work. No account, backend, analytics, or cloud upload service. The included home is fictional; all meshes and materials are procedural.
+Arrange furniture at real scale, explore rooms at eye level, and return to a saved arrangement when an experiment doesn't work. The core planner needs no account or backend and has no analytics or cloud upload service. An optional local MCP bridge imports Zillow listing references. The included home is fictional; built-in meshes and materials are procedural.
 
 ## Run locally
 
@@ -33,12 +33,15 @@ Open **http://127.0.0.1:5173**. No API keys or environment variables are needed.
 - **Explore:** orbit a cutaway 3D model, switch to a floor plan, or walk through room viewpoints. Toggle labels and lighting mood.
 - **Keep alternatives:** working drafts autosave locally. **Save checkpoint** records a separate arrangement and camera; **Reset to saved** restores both. Undo can reverse a reset.
 - **Export:** download a complete project as JSON, a view as PNG, or a GLB model in meters, including the ceiling and furniture.
+- **Use listing references:** import Zillow MCP results, organize photos by room, and link images to windows as illustrative backdrops. Review any supplied model layout and its measurement basis before opening it. Window links support Undo, saved checkpoints, and JSON export.
 
 ## Model your home
 
 Open **Project → Download project JSON** to make a working copy. Edit the JSON in a text editor, then use **Open project** to load it. The project contains the floor polygon, walls, doors, windows, fixtures, room cameras, and furnishings.
 
 See the [project format guide](docs/project-format.md), [fictional example](public/examples/courtyard.json), and [user guide](docs/user-guide.md). There is no visual wall-drawing editor or automatic floor-plan/photo conversion in this release.
+
+For listing automation, see [Zillow MCP setup and agent imports](docs/zillow-mcp.md). Use the Zillow app through your agent and import its prepared JSON, or configure a separate Streamable HTTP provider in ignored `.env.local` and run `pnpm dev:zillow`. No public endpoint or credentials for Zillow's ChatGPT app are bundled. Photos and floor-plan images do not establish measured room geometry. Remote images load only when you choose **Load listing images**.
 
 Architecture coordinates are **feet**; furniture dimensions are **inches**. Exported GLB geometry is **meters**. Keep personal plans and exports outside the repository or in the git-ignored `private/` directory. Anything placed in `public/` ships with the app.
 

@@ -152,14 +152,16 @@ main {
 .tabs {
   display: flex;
   border-bottom: 1px solid #dee1d7;
-  margin: 0 20px;
+  margin: 0 12px;
 }
 .tabs button {
   flex: 1;
+  min-width: 0;
+  font-size: 11px;
   border: 0;
   background: transparent;
   border-radius: 0;
-  padding: 12px 0;
+  padding: 12px 2px;
   color: #8b938a;
 }
 .tabs button.active {
@@ -954,6 +956,65 @@ dialog::backdrop {
 }
 #project-origin {
   color: #667459;
+}
+#references-panel > .wide-button,
+#references-panel .note > .wide-button {
+  margin-block: 5px;
+}
+#references-panel a,
+#reference-status {
+  overflow-wrap: anywhere;
+}
+.reference-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0;
+}
+.reference-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 9px;
+  gap: 6px;
+  text-align: left;
+}
+.reference-card[aria-pressed='true'] {
+  outline: 2px solid #497963;
+  background: #edf3ec;
+}
+.reference-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.reference-card strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.reference-card small {
+  font-size: 10px;
+  line-height: 1.5;
+}
+#reference-photo-preview img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  margin-block: 12px;
+}
+#reference-editor .field {
+  margin-block: 12px;
+}
+.reference-link-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  margin-block: 8px;
+}
+.reference-link-row span {
+  flex: 1;
 }
 #loading {
   max-width: 420px;

@@ -1,6 +1,6 @@
 # Project format — version 1
 
-A project is JSON data. It does not contain scripts, remote textures, or imported meshes. Use **Project → Open project** to load it. For a complete furnished example, copy [`courtyard.json`](../public/examples/courtyard.json). The authoritative validation rules are in [`src/validation.js`](../src/validation.js).
+A project is JSON data. It does not contain scripts or imported meshes. Optional listing references contain HTTPS image links, loaded only by an explicit session choice. Use **Project → Open project** to load it. For a complete furnished example, copy [`courtyard.json`](../public/examples/courtyard.json). The authoritative validation rules are in [`src/validation.js`](../src/validation.js).
 
 ## Coordinates and units
 
@@ -117,6 +117,12 @@ For a Murphy worktop, provide all of `workDepth`, `deskW`, `deskD`, `deskH`, and
 The optional headboard concept uses `headboardConcept: true`, `headEnd: "positive"` or `"negative"`, and `headboardRaised: boolean`. It cannot be raised while the bed is closed. This is a geometric illustration, not a manufacturer-supported mechanism.
 
 For desk monitors, provide `tvMonitorIn` (27 or 32), `monitorLayout` (`triple`, `quad`, or `wall`), and `tvMonitorMode` (`work` or `guest`). `triple` has one 34-inch ultrawide plus two screens; `quad` has two ultrawides plus two screens. `wall` renders one ultrawide and one 27-inch monitor; **add a separate TV item** for a wall TV. Monitor arms are illustrative, with no load or range certification.
+
+## Listing references (optional, additive v1 field)
+
+`references` contains `source`, `images`, and `bindings` as documented in the [Zillow MCP guide](zillow-mcp.md#listing-packet--version-1). Existing v1 projects remain unchanged and valid. Images may have an optional `roomId` matching an existing room. Bindings target existing windows by zero-based wall/opening index, with an explicit visible `side` (1 or −1) and boolean `flipX`. References never supply collision geometry. Changing references keeps the current architecture's checkpoint namespace; Reset restores them together with furniture. Image loading permission is not serialized. JSON exports contain original source URLs and attribution; GLB exports omit photo backdrops.
+
+Older Home Planner builds do not display this field or include it in reference-aware Undo/Reset. Use a current build when editing a project with listing references.
 
 ## Saved snapshots
 

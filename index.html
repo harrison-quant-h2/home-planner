@@ -41,6 +41,7 @@
             Furnish</button
           ><button data-tab="rooms" aria-pressed="false">Explore</button
           ><button data-tab="project" aria-pressed="false">Project</button>
+          <button data-tab="references" aria-pressed="false">References</button>
         </div>
         <section id="furnish-panel" class="panel">
           <div class="section-heading">
@@ -115,6 +116,127 @@
             Single-level spaces only. Fit checks are approximate; verify
             measurements and furniture mechanisms before making a purchase.
           </p>
+        </section>
+        <section id="references-panel" class="panel" hidden>
+          <span class="eyebrow">FROM LISTING TO LIVING SPACE</span>
+          <h3>Bring the home into focus.</h3>
+          <p class="small">
+            Import Zillow photos and floor-plan references, then connect them to
+            rooms and windows in your model.
+          </p>
+          <label class="field full"
+            >Property address<input
+              id="listing-query"
+              type="text"
+              maxlength="300"
+              placeholder="Street, city, state, ZIP"
+          /></label>
+          <button id="lookup-listing" class="wide-button">
+            Look up with MCP
+          </button>
+          <button id="import-listing" class="wide-button">
+            Import listing JSON
+          </button>
+          <p class="small">
+            Direct lookup uses your configured local MCP server. An agent can
+            also prepare a listing JSON using the Zillow app.
+          </p>
+          <details>
+            <summary>Connection setup</summary>
+            <p class="small">
+              Configure your provider endpoint and read-only property tool in
+              .env.local, then run <code>pnpm dev:zillow</code>. No public
+              endpoint for Zillow’s ChatGPT app is assumed.
+            </p>
+            <a
+              href="https://github.com/harrison-quant-h2/home-planner/blob/main/docs/zillow-mcp.md"
+              target="_blank"
+              rel="noreferrer"
+              >Zillow MCP setup &amp; agent guide ↗</a
+            >
+          </details>
+          <p
+            id="reference-status"
+            class="note"
+            role="status"
+            aria-live="polite"
+          >
+            Ready for a listing import. Your current layout stays intact.
+          </p>
+          <div id="listing-preview" class="note" hidden>
+            <strong id="listing-preview-title"></strong>
+            <p id="listing-preview-summary"></p>
+            <a id="listing-preview-source" target="_blank" rel="noreferrer"
+              >View original listing ↗</a
+            >
+            <p id="listing-preview-attribution" class="small"></p>
+            <p id="listing-layout-basis" class="small"></p>
+            <button id="attach-listing" class="wide-button">
+              Attach references to this project
+            </button>
+            <button
+              id="apply-listing-layout"
+              class="wide-button"
+              hidden
+            ></button>
+          </div>
+          <p id="reference-empty" class="small">
+            No listing attached. Photos alone do not establish room measurements
+            or which view belongs outside a window.
+          </p>
+          <div id="attached-references" hidden>
+            <h3 id="reference-listing-title"></h3>
+            <a id="reference-listing-link" target="_blank" rel="noreferrer"
+              >Zillow source &amp; listing credits ↗</a
+            >
+            <p id="reference-attribution" class="small"></p>
+            <button id="load-reference-images" class="wide-button">
+              Load listing images
+            </button>
+            <p class="small">
+              Loading contacts the image hosts. Images stay hidden on reload
+              until you choose to load them.
+            </p>
+            <div id="reference-gallery" class="reference-gallery"></div>
+            <div id="reference-editor" class="note" hidden>
+              <strong id="reference-photo-title"></strong>
+              <div id="reference-photo-preview"></div>
+              <a id="reference-photo-source" target="_blank" rel="noreferrer"
+                >Open source image ↗</a
+              >
+              <label class="field full"
+                >Associated room<select id="reference-room"></select
+              ></label>
+              <div id="window-link-controls">
+                <label class="field full"
+                  >Window in this model<select id="reference-window"></select
+                ></label>
+                <label class="field full"
+                  >Visible side<select id="reference-side">
+                    <option value="1">Side A</option>
+                    <option value="-1">Side B (opposite)</option>
+                  </select></label
+                >
+                <label
+                  ><input id="reference-mirror" type="checkbox" /> Mirror image
+                  horizontally</label
+                >
+                <button id="link-window" class="wide-button">
+                  Use photo at window
+                </button>
+                <p class="small">
+                  Use Walk through to check the side. A linked photo is an
+                  illustrative backdrop; perspective, compass direction, and
+                  daylight are unverified.
+                </p>
+              </div>
+            </div>
+            <h3>Window photo links</h3>
+            <div id="window-links"></div>
+            <button id="clear-references" class="wide-button">
+              Remove listing references
+            </button>
+          </div>
         </section>
         <footer class="sidebar-footer">
           <span class="status-dot"></span>Local first · open source
@@ -369,5 +491,11 @@
       hidden
     />
     <script type="module" src="./src/main.js"></script>
+    <input
+      id="listing-file"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    />
   </body>
 </html>

@@ -1,0 +1,392 @@
+{
+  "format": "home-planner",
+  "version": 1,
+  "id": "courtyard-demo",
+  "name": "Courtyard House",
+  "units": "feet",
+  "ceilingHeight": 9,
+  "footprint": [
+    [0, 0],
+    [36, 0],
+    [36, 28],
+    [0, 28]
+  ],
+  "rooms": [
+    {
+      "id": "living",
+      "name": "Living room",
+      "x": 25,
+      "z": 8,
+      "eye": [32, 5.4, 14],
+      "target": [23, 3, 5]
+    },
+    {
+      "id": "bedroom",
+      "name": "Bedroom",
+      "x": 7,
+      "z": 7,
+      "eye": [12, 5.4, 11],
+      "target": [7, 3, 5]
+    },
+    {
+      "id": "office",
+      "name": "Office / guest",
+      "x": 7,
+      "z": 21,
+      "eye": [2, 5.4, 25],
+      "target": [10, 3, 20]
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen / dining",
+      "x": 25,
+      "z": 22,
+      "eye": [18, 5.4, 20],
+      "target": [30, 3, 25]
+    }
+  ],
+  "walls": [
+    {
+      "a": [0.2, 0.2],
+      "b": [35.8, 0.2],
+      "thickness": 0.4,
+      "openings": [
+        {
+          "at": 6.8,
+          "width": 7,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        },
+        {
+          "at": 24,
+          "width": 8,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        }
+      ]
+    },
+    {
+      "a": [35.8, 0.2],
+      "b": [35.8, 27.8],
+      "thickness": 0.4,
+      "openings": [
+        {
+          "at": 9,
+          "width": 5,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        },
+        {
+          "at": 19.5,
+          "width": 3,
+          "height": 7,
+          "sill": 0,
+          "kind": "door"
+        }
+      ]
+    },
+    {
+      "a": [35.8, 27.8],
+      "b": [0.2, 27.8],
+      "thickness": 0.4,
+      "openings": [
+        {
+          "at": 8,
+          "width": 5,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        },
+        {
+          "at": 29,
+          "width": 5,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        }
+      ]
+    },
+    {
+      "a": [0.2, 27.8],
+      "b": [0.2, 0.2],
+      "thickness": 0.4,
+      "openings": [
+        {
+          "at": 6.8,
+          "width": 5,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        },
+        {
+          "at": 20.8,
+          "width": 5,
+          "height": 4,
+          "sill": 3,
+          "kind": "window"
+        }
+      ]
+    },
+    {
+      "a": [14, 0.2],
+      "b": [14, 27.8],
+      "thickness": 0.4,
+      "openings": [
+        {
+          "at": 10.8,
+          "width": 3,
+          "height": 7,
+          "sill": 0,
+          "kind": "door"
+        },
+        {
+          "at": 26,
+          "width": 3,
+          "height": 7,
+          "sill": 0,
+          "kind": "door"
+        }
+      ]
+    },
+    {
+      "a": [0.2, 14],
+      "b": [14, 14],
+      "thickness": 0.4,
+      "openings": []
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "Kitchen counter",
+      "x": 25,
+      "z": 26.5,
+      "w": 15,
+      "d": 2,
+      "low": 0,
+      "high": 3,
+      "rot": 0,
+      "color": "#e2ded3"
+    },
+    {
+      "name": "Kitchen island",
+      "x": 27,
+      "z": 20.5,
+      "w": 7,
+      "d": 3,
+      "low": 0,
+      "high": 3,
+      "rot": 0,
+      "color": "#b79978"
+    }
+  ],
+  "items": [
+    {
+      "type": "sectional",
+      "name": "L-shaped sectional",
+      "w": 120,
+      "d": 90,
+      "h": 34,
+      "seatDepth": 40,
+      "returnSide": "left",
+      "color": "#d6c8b4",
+      "id": "sectional",
+      "x": 21,
+      "z": 4.9,
+      "rot": 0
+    },
+    {
+      "type": "coffee",
+      "name": "Coffee table",
+      "w": 32,
+      "d": 32,
+      "h": 16,
+      "color": "#6f4c32",
+      "id": "coffee",
+      "x": 24,
+      "z": 7.2,
+      "rot": 0
+    },
+    {
+      "type": "rug",
+      "name": "Area rug",
+      "w": 132,
+      "d": 108,
+      "h": 0.7,
+      "color": "#c9baa0",
+      "id": "living-rug",
+      "x": 24,
+      "z": 6,
+      "rot": 0
+    },
+    {
+      "type": "recliner",
+      "name": "Recliner",
+      "w": 37,
+      "d": 38,
+      "h": 42,
+      "openDepth": 67,
+      "rearClearance": 12,
+      "open": false,
+      "color": "#9f7858",
+      "id": "recliner",
+      "x": 31,
+      "z": 12,
+      "rot": 160
+    },
+    {
+      "type": "tv",
+      "name": "Wall-mounted TV",
+      "w": 57,
+      "d": 2.2,
+      "h": 32,
+      "mountHeight": 60,
+      "extension": 12,
+      "swivel": 0,
+      "color": "#202729",
+      "id": "living-tv",
+      "x": 35.55,
+      "z": 4.7,
+      "rot": -90
+    },
+    {
+      "type": "bed",
+      "name": "King bed",
+      "w": 80,
+      "d": 84,
+      "h": 34,
+      "mattressW": 76,
+      "mattressD": 80,
+      "color": "#d6cbb9",
+      "id": "king",
+      "x": 7,
+      "z": 5,
+      "rot": 0
+    },
+    {
+      "type": "nightstand",
+      "name": "Bedside table",
+      "w": 22,
+      "d": 18,
+      "h": 24,
+      "color": "#aa8057",
+      "id": "nightstand-left",
+      "x": 2.5,
+      "z": 2.5,
+      "rot": 0
+    },
+    {
+      "type": "nightstand",
+      "name": "Bedside table",
+      "w": 22,
+      "d": 18,
+      "h": 24,
+      "color": "#aa8057",
+      "id": "nightstand-right",
+      "x": 11.5,
+      "z": 2.5,
+      "rot": 0
+    },
+    {
+      "type": "desk",
+      "name": "72 \u00d7 30 desk",
+      "w": 72,
+      "d": 30,
+      "h": 29,
+      "tvMonitorIn": 27,
+      "monitorLayout": "triple",
+      "tvMonitorMode": "work",
+      "color": "#aa8057",
+      "id": "desk",
+      "x": 4.8,
+      "z": 15.8,
+      "rot": 0
+    },
+    {
+      "type": "embody",
+      "name": "Ergonomic rolling chair",
+      "w": 29.5,
+      "d": 29,
+      "h": 43.5,
+      "color": "#343d41",
+      "id": "office-chair",
+      "x": 4.8,
+      "z": 19,
+      "rot": 180
+    },
+    {
+      "type": "murphy",
+      "name": "Queen bed + folding desk",
+      "w": 88,
+      "d": 16,
+      "h": 67,
+      "openDepth": 65,
+      "workDepth": 40,
+      "deskW": 83,
+      "deskD": 24,
+      "deskH": 29,
+      "open": false,
+      "officeMode": "work",
+      "color": "#eeeae0",
+      "id": "desk-bed",
+      "x": 13.05,
+      "z": 20.7,
+      "rot": -90
+    },
+    {
+      "type": "dining",
+      "name": "Dining table",
+      "w": 60,
+      "d": 34,
+      "h": 30,
+      "color": "#b18c66",
+      "id": "dining",
+      "x": 19,
+      "z": 22,
+      "rot": 90
+    },
+    {
+      "type": "stool",
+      "name": "Counter stool",
+      "w": 18,
+      "d": 19,
+      "h": 37,
+      "color": "#a9845b",
+      "id": "stool-1",
+      "x": 25,
+      "z": 17.9,
+      "rot": 0
+    },
+    {
+      "type": "stool",
+      "name": "Counter stool",
+      "w": 18,
+      "d": 19,
+      "h": 37,
+      "color": "#a9845b",
+      "id": "stool-2",
+      "x": 29,
+      "z": 17.9,
+      "rot": 0
+    },
+    {
+      "type": "plant",
+      "name": "Floor plant",
+      "w": 24,
+      "d": 24,
+      "h": 60,
+      "color": "#547454",
+      "id": "plant",
+      "x": 32.5,
+      "z": 1.8,
+      "rot": 0
+    }
+  ],
+  "notes": [
+    "Fictional demonstration plan; all measurements and finishes are illustrative.",
+    "Door warnings use a four-foot approach zone, not an exact hinge or panel sweep.",
+    "Murphy-bed geometry shows two endpoint states. Anchors, hardware loads, and the movement between states require independent verification."
+  ]
+}

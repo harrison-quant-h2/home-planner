@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="A local-first, open-source 3D home furnishing planner. Arrange furniture, compare fit, and explore at eye level."
+    />
+    <meta name="color-scheme" content="light" />
+    <title>Home Planner</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#furniture-list">Skip to furniture controls</a>
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <div>
+          <h1>Home Planner</h1>
+          <p id="project-name">Your space, considered.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="saved" aria-live="polite">Local workspace</span
+        ><button id="reset-layout" disabled>Reset to saved</button
+        ><button id="save-layout">Save checkpoint</button
+        ><button id="snapshot">Save image</button
+        ><button id="export-model" class="primary">Export 3D</button>
+      </div>
+    </header>
+    <main>
+      <aside class="sidebar">
+        <div class="sidebar-intro">
+          <span class="eyebrow">A PLACE FOR EVERYTHING</span>
+          <h2>Make room for you.</h2>
+          <p>Try it here. Feel at home there.</p>
+        </div>
+        <div class="tabs" aria-label="Workspace panels">
+          <button data-tab="furnish" class="active" aria-pressed="true">
+            Furnish</button
+          ><button data-tab="rooms" aria-pressed="false">Explore</button
+          ><button data-tab="project" aria-pressed="false">Project</button>
+        </div>
+        <section id="furnish-panel" class="panel">
+          <div class="section-heading">
+            <h3>Your furniture</h3>
+            <span id="item-count"></span>
+          </div>
+          <label class="field full"
+            >Select a piece<select id="furniture-list">
+              <option value="">Choose furniture…</option>
+            </select></label
+          >
+          <p class="small">
+            Choose a piece here or in the scene. Drag to place it, then
+            fine-tune its dimensions.
+          </p>
+          <div class="section-heading">
+            <h3>Furniture library</h3>
+            <span>Outer sizes</span>
+          </div>
+          <div id="catalog" class="catalog"></div>
+          <div class="layout-tools">
+            <button id="empty">Empty home</button
+            ><button id="starter">Starter layout</button>
+          </div>
+        </section>
+        <section id="rooms-panel" class="panel" hidden>
+          <h3>Explore at eye level</h3>
+          <p class="small">
+            Choose a room, then drag to look around. Use W A S D or the arrow
+            keys to walk.
+          </p>
+          <div id="room-list"></div>
+          <div class="note">
+            <strong>Plan dimensions</strong>
+            <p id="plan-dimensions"></p>
+            <p>
+              Lighting is illustrative; glare and sunlight are not simulated.
+            </p>
+          </div>
+        </section>
+        <section id="project-panel" class="panel" hidden>
+          <h3>Keep your possibilities.</h3>
+          <p class="small">
+            Your draft and saved checkpoint stay in this browser. Download JSON
+            for a portable backup.
+          </p>
+          <button id="download-project" class="wide-button">
+            Download project JSON</button
+          ><button id="open-project" class="wide-button">Open project</button
+          ><button id="demo-project" class="wide-button">
+            Open demo project
+          </button>
+          <p class="small" id="project-origin">The demo is a fictional home.</p>
+          <details open>
+            <summary>Planning assumptions</summary>
+            <ul id="assumptions"></ul>
+          </details>
+          <div class="note">
+            <strong>Model another home</strong>
+            <p>
+              Start with the demo JSON. Edit its footprint, walls, openings,
+              fixtures, and room views, then open it here.
+            </p>
+            <a
+              href="https://github.com/harrison-quant-h2/home-planner/blob/main/docs/project-format.md"
+              target="_blank"
+              rel="noreferrer"
+              >Project format guide ↗</a
+            >
+          </div>
+          <p class="small">
+            Single-level spaces only. Fit checks are approximate; verify
+            measurements and furniture mechanisms before making a purchase.
+          </p>
+        </section>
+        <footer class="sidebar-footer">
+          <span class="status-dot"></span>Local first · open source
+          <button id="help" aria-label="Help and keyboard shortcuts">?</button>
+        </footer>
+      </aside>
+      <section class="workspace" aria-label="Interactive 3D furnishing planner">
+        <div class="view-toolbar">
+          <div class="segmented" aria-label="Model view">
+            <button data-view="dollhouse" class="active" aria-pressed="true">
+              3D home</button
+            ><button data-view="plan" aria-pressed="false">Floor plan</button
+            ><button data-view="walk" aria-pressed="false">Walk through</button>
+          </div>
+          <div class="view-settings">
+            <label><input id="labels" type="checkbox" /> Room labels</label
+            ><select id="lighting" aria-label="Lighting mood">
+              <option value="day">Daylight</option>
+              <option value="evening">Evening</option></select
+            ><button id="reset-view" aria-label="Reset camera">Recenter</button>
+          </div>
+        </div>
+        <div id="viewport">
+          <canvas
+            id="scene"
+            tabindex="0"
+            aria-label="3D home. Choose furniture from the sidebar for keyboard-accessible position and size controls."
+          ></canvas>
+          <div id="loading" role="status">
+            Making room<span>Preparing materials and lighting…</span>
+          </div>
+          <div class="view-caption">
+            <span id="view-title">The whole home</span
+            ><small id="view-subtitle"
+              >Illustrative furnishings · real proportions</small
+            >
+          </div>
+          <div id="selection-panel" hidden>
+            <div class="selection-heading">
+              <div>
+                <span class="eyebrow">SELECTED PIECE</span>
+                <h3 id="selected-name"></h3>
+              </div>
+              <button id="deselect" aria-label="Deselect furniture">×</button>
+            </div>
+            <label class="field full"
+              >Name<input id="item-name" type="text" maxlength="80"
+            /></label>
+            <div class="fields">
+              <label class="field"
+                >Width · in<input
+                  id="item-w"
+                  type="number"
+                  min="1"
+                  max="360"
+                  step="1" /></label
+              ><label class="field"
+                ><span id="depth-label">Depth · in</span
+                ><input
+                  id="item-d"
+                  type="number"
+                  min="1"
+                  max="360"
+                  step="1" /></label
+              ><label class="field"
+                >Height · in<input
+                  id="item-h"
+                  type="number"
+                  min="0.5"
+                  max="144"
+                  step="0.5" /></label
+              ><label class="field"
+                ><span id="rotation-label">Rotation · °</span
+                ><input
+                  id="item-rot"
+                  type="number"
+                  min="-360"
+                  max="360"
+                  step="5" /></label
+              ><label class="field"
+                >X position · ft<input
+                  id="item-x"
+                  type="number"
+                  step="0.083333" /></label
+              ><label class="field"
+                >Y on plan · ft<input id="item-z" type="number" step="0.083333"
+              /></label>
+            </div>
+            <div id="murphy-controls" hidden>
+              <label class="field"
+                ><span id="open-depth-label">Open projection · in</span
+                ><input
+                  id="item-openDepth"
+                  type="number"
+                  min="1"
+                  max="360"
+                  step="0.1" /></label
+              ><button id="toggle-selected-bed">Open queen bed</button
+              ><small>Dashed outline shows the open footprint.</small>
+            </div>
+            <div id="recliner-controls" hidden>
+              <label class="field"
+                >Space behind when reclined · in<input
+                  id="item-rearClearance"
+                  type="number"
+                  min="0"
+                  max="60"
+                  step="1"
+              /></label>
+            </div>
+            <div id="sectional-controls" hidden>
+              <div class="fields">
+                <label class="field"
+                  >Section depth · in<input
+                    id="item-seatDepth"
+                    type="number"
+                    min="12"
+                    max="100"
+                    step="1" /></label
+                ><label class="field"
+                  >Return side<select id="item-returnSide">
+                    <option value="right">Right</option>
+                    <option value="left">Left</option>
+                  </select></label
+                >
+              </div>
+              <small>Width is the long side; depth is the full L return.</small>
+            </div>
+            <div id="tv-controls" hidden>
+              <div class="fields">
+                <label class="field"
+                  >Swivel angle · °<input
+                    id="item-swivel"
+                    type="number"
+                    min="-75"
+                    max="75"
+                    step="1" /></label
+                ><label class="field"
+                  >Arm extension · in<input
+                    id="item-extension"
+                    type="number"
+                    min="3"
+                    max="36"
+                    step="1" /></label
+                ><label class="field"
+                  >Screen center · in<input
+                    id="item-mountHeight"
+                    type="number"
+                    min="12"
+                    max="120"
+                    step="1"
+                /></label>
+              </div>
+              <small
+                >Positions mark the wall anchor. Swivel turns the screen around
+                its bracket.</small
+              >
+            </div>
+            <div id="desk-controls" hidden>
+              <label class="field"
+                >Monitor arrangement<select id="item-monitorLayout">
+                  <option value="triple">1 ultrawide + 2 screens</option>
+                  <option value="quad">2 ultrawides + 2 screens</option>
+                  <option value="wall">1 ultrawide + 1 screen</option>
+                </select></label
+              ><label class="field"
+                >Guest screen<select id="item-tvMonitorIn">
+                  <option value="27">27 inch monitor</option>
+                  <option value="32">32 inch TV preview</option>
+                </select></label
+              ><button id="aim-screen">Aim screen for guest</button>
+            </div>
+            <div id="headboard-controls" hidden>
+              <label
+                ><input id="item-headboardConcept" type="checkbox" /> Concept
+                end headboard</label
+              ><small
+                >Illustrative end support. Cabinet fit, anchors, and load
+                capacity are unverified.</small
+              >
+            </div>
+            <div class="color-row">
+              <label for="item-color">Finish</label
+              ><input id="item-color" type="color" /><span
+                id="item-size"
+              ></span>
+            </div>
+            <div id="fit-status" aria-live="polite"></div>
+            <div class="selection-actions">
+              <button id="rotate">Rotate 90°</button
+              ><button id="duplicate">Duplicate</button
+              ><button id="delete">Remove</button>
+            </div>
+          </div>
+          <div class="canvas-bottom">
+            <div id="room-pills"></div>
+            <div class="interaction-bar">
+              <span id="interaction-hint"
+                >Drag to orbit · scroll to zoom · select a piece to
+                furnish</span
+              >
+              <div>
+                <label
+                  ><input id="snap" type="checkbox" checked /> Snap 1″</label
+                ><button id="undo" disabled>Undo</button
+                ><button id="redo" disabled>Redo</button>
+              </div>
+            </div>
+          </div>
+          <div id="toast" role="status" hidden></div>
+        </div>
+      </section>
+    </main>
+    <dialog id="reference-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-header">
+        <h2 id="dialog-title">Using Home Planner</h2>
+        <button id="close-dialog">Close</button>
+      </div>
+      <div id="dialog-content">
+        <p>
+          Select furniture in the scene or the sidebar list. Edit its outer
+          sizes in inches and its X/Z position in feet. R rotates; Delete
+          removes; Ctrl/⌘ Z undoes; Ctrl/⌘ Shift Z redoes.
+        </p>
+        <p>
+          Save checkpoint remembers furniture and the current camera view. Reset
+          to saved restores them; Undo can reverse the reset. Download project
+          JSON to back up the complete floor plan and furniture.
+        </p>
+        <p>
+          In Walk through, drag to look and use W A S D or arrow keys to move.
+          Escape returns to the 3D home. Room buttons move you to a preset
+          viewpoint.
+        </p>
+        <p>
+          Murphy beds and recliners show open and closed endpoints. A dashed
+          outline shows their deployed footprint. Moving paths, anchoring,
+          occupant access, exact door sweeps, and delivery routes are not
+          simulated.
+        </p>
+        <p>
+          The scene is visual; the sidebar provides keyboard selection and
+          numeric editing. This is not a fully nonvisual or touch-optimized CAD
+          tool.
+        </p>
+      </div>
+    </dialog>
+    <input
+      id="import-file"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    />
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

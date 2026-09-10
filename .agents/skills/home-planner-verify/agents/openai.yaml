@@ -1,0 +1,6 @@
+interface:
+  display_name: 'Verify Home Planner'
+  short_description: 'Check behavior and release evidence'
+  default_prompt: 'Use $home-planner-verify to validate the current change and report actual evidence.'
+policy:
+  allow_implicit_invocation: true

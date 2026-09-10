@@ -1,0 +1,8 @@
+# Shared project configuration. Codex loads this layer for trusted projects.
+# Reference: https://learn.chatgpt.com/docs/config-file/config-reference
+project_root_markers = [".git"]
+project_doc_max_bytes = 32768
+
+# Model choice, reasoning effort, permissions, providers, credentials, and
+# personal tool connections remain in the contributor's own configuration.
+# Root AGENTS.md supplies project instructions; .agents/skills supplies skills.

@@ -23,3 +23,7 @@ For the README screenshot, run `UPDATE_DOCS=1 pnpm test:e2e --grep 'renders the 
 Describe the concrete problem, resulting behavior, verification performed, and any remaining limitations. Include screenshots for visual changes and a minimal project for geometry bugs. Keep unrelated cleanup separate. Do not replace a project-format version without an explicit compatibility strategy.
 
 By contributing, you agree that your contribution is available under the repository's MIT license. Include the applicable license and provenance for any third-party asset. Procedural shapes or clearly licensed assets are preferred.
+
+## Agent contributions
+
+Start with [AGENTS.md](AGENTS.md) and [.codex/README.md](.codex/README.md). Keep shared instructions concise and stable, use repository commands, and record actual verification. Do not commit personal/global Codex configuration, task transcripts, credentials, or private planning reports.

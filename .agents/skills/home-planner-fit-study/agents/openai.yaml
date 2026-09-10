@@ -1,0 +1,6 @@
+interface:
+  display_name: 'Plan a room'
+  short_description: 'Compare furniture layouts and fit'
+  default_prompt: 'Use $home-planner-fit-study to inspect a project, compare layouts, and explain remaining clearances.'
+policy:
+  allow_implicit_invocation: true

@@ -10,3 +10,12 @@ test-results/
 *.local.*
 private/
 outputs/
+
+# Local agent state; shared configuration and skills remain tracked.
+.codex/auth.json
+.codex/history.jsonl
+.codex/sessions/
+.codex/logs/
+.codex/*.local.toml
+.codex/AGENTS.override.md
+AGENTS.override.md

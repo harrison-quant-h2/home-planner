@@ -4,3 +4,6 @@ coverage/
 playwright-report/
 test-results/
 pnpm-lock.yaml
+private/
+.codex/sessions/
+.codex/logs/

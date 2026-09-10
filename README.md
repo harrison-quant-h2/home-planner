@@ -46,6 +46,19 @@ Architecture coordinates are **feet**; furniture dimensions are **inches**. Expo
 
 This is a furnishing study, not surveyed CAD, a building-code checker, or a furniture mechanism simulator. Fit warnings use simplified geometry. They do not certify circulation, accessibility, delivery paths, load capacity, wall anchors, exact door sweeps, or clearance through a bed's opening motion. Screen glare and sunlight are not simulated. Kitchen fixtures are dimensioned blocks, not detailed appliance models. Multi-floor homes, CAD/BIM import, collaboration, and photorealistic path tracing are outside this release.
 
+## Work with an agent
+
+Open the repository in Codex or another coding agent. [AGENTS.md](AGENTS.md) explains the project invariants and verification workflow; [.codex/README.md](.codex/README.md) documents the shared configuration, desktop actions, and three repository skills.
+
+```sh
+pnpm agent:doctor                              # read-only runtime check
+pnpm agent:setup                               # locked install + build
+pnpm --silent agent:inspect path/to/home.json   # JSON fit report, no browser
+pnpm agent:verify                              # checks, fresh build, browser tests
+```
+
+The headless inspector accepts projects and snapshots and preserves the input file. A successful command means the data is valid; examine its fit warnings before making a planning decision.
+
 ## Develop
 
 ```sh

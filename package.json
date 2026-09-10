@@ -24,7 +24,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build"
+    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "agent:doctor": "node .codex/scripts/doctor.mjs",
+    "agent:setup": "node .codex/scripts/setup.mjs",
+    "agent:verify": "node .codex/scripts/verify.mjs",
+    "agent:inspect": "node .codex/scripts/inspect-project.mjs"
   },
   "dependencies": {
     "three": "0.180.0"

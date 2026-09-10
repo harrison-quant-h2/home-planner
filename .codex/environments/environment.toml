@@ -1,0 +1,33 @@
+# Home Planner local environment, schema version 1.
+# Fields checked against the installed desktop app's environment schema.
+# The desktop Settings > Local environments editor can maintain this file.
+version = 1
+name = "home-planner"
+
+[setup]
+script = "pnpm agent:setup"
+
+[[actions]]
+name = "Run planner"
+icon = "run"
+command = "pnpm dev"
+
+[[actions]]
+name = "Check changes"
+icon = "test"
+command = "pnpm check"
+
+[[actions]]
+name = "Verify in browser"
+icon = "test"
+command = "pnpm agent:verify"
+
+[[actions]]
+name = "Check environment"
+icon = "debug"
+command = "pnpm agent:doctor"
+
+[[actions]]
+name = "Install test browser"
+icon = "tool"
+command = "pnpm exec playwright install chromium"

@@ -98,6 +98,22 @@ test('URL validation rejects scripts, credentials, local destinations and embedd
     assert.equal(publicImageUrl(url), false, url);
   assert.equal(publicImageUrl('https://images.example.org/a.png'), true);
 });
+test('floor-plan metadata takes precedence over a duplicate gallery photo', () => {
+  const url = 'https://images.example.org/plan.png';
+  const packet = normalizeListingResult({
+    address: 'Fictional house',
+    url: 'https://www.zillow.com/',
+    photos: [url],
+    floorPlans: [{ url, caption: 'Dimensioned drawing' }],
+  });
+  assert.equal(packet.images.length, 1);
+  assert.equal(packet.images[0].kind, 'floor-plan');
+  assert.equal(packet.images[0].caption, 'Dimensioned drawing');
+  const project = attachListing(demo(), packet);
+  assert.throws(() =>
+    linkWindow(project, packet.images[0].id, windowTargets(project)[0]),
+  );
+});
 test('attaching references is immutable, keeps architecture and checkpoints in their namespace', () => {
   const base = demo(),
     key = storageKey(base),

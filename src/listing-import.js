@@ -107,7 +107,17 @@ export function normalizeListingResult(input, now = new Date().toISOString()) {
         throw new Error(
           'A listing image has an unsupported URL. Use HTTPS image URLs in a listing packet.',
         );
-      if (seen.has(url)) continue;
+      if (seen.has(url)) {
+        // A floor plan can also appear in a provider's general photo gallery.
+        // Its explicit category takes precedence, including the window-texture restriction.
+        if (kind === 'floor-plan') {
+          const existing = images.find((image) => image.url === url);
+          existing.kind = 'floor-plan';
+          if (typeof entry?.caption === 'string')
+            existing.caption = entry.caption;
+        }
+        continue;
+      }
       seen.add(url);
       images.push({
         id: `image-${images.length + 1}`,

@@ -3,6 +3,17 @@ import { readFile } from 'node:fs/promises';
 import { listing } from '../listing-helpers.js';
 import { demo } from '../helpers.js';
 
+function referenceHome() {
+  const project = demo();
+  // Exercise the real rooms, walls, windows, and furniture with a focused fixture.
+  // The complete 15-piece demo is covered in planner.spec.js; repeatedly rebuilding
+  // it competes with software WebGL on two-core CI hosts during metadata tests.
+  project.items = project.items.filter((item) =>
+    ['sectional', 'coffee'].includes(item.type),
+  );
+  return project;
+}
+
 async function importListing(page, packet = listing()) {
   await page.locator('#listing-file').setInputFiles({
     name: 'listing.json',
@@ -17,11 +28,14 @@ async function downloadProject(page) {
   return JSON.parse(await readFile(await (await wait).path(), 'utf8'));
 }
 test.beforeEach(async ({ page }) => {
+  await page.route('**/examples/courtyard.json', (route) =>
+    route.fulfill({ json: referenceHome() }),
+  );
   await page.goto('/');
   await expect(page.locator('#scene')).toHaveAttribute('data-ready', 'true');
   await page.getByRole('button', { name: 'References', exact: true }).click();
 });
-test('listing import, room/window assignment, checkpoint reset, reload, undo and JSON export', async ({
+test('listing import, room/window assignment, checkpoint reset, undo and JSON export', async ({
   page,
 }) => {
   const errors = [];
@@ -49,9 +63,6 @@ test('listing import, room/window assignment, checkpoint reset, reload, undo and
   await expect(page.locator('#saved')).toHaveText('Matches saved layout');
   await page.locator('#window-links button').click();
   await expect(page.locator('#window-links button')).toHaveCount(0);
-  await page.reload();
-  await expect(page.locator('#scene')).toHaveAttribute('data-ready', 'true');
-  await page.getByRole('button', { name: 'References', exact: true }).click();
   await page.locator('#reset-layout').click();
   await expect(page.locator('#window-links button')).toHaveCount(1);
   await page.locator('#undo').click();
@@ -65,7 +76,7 @@ test('listing import, room/window assignment, checkpoint reset, reload, undo and
     flipX: true,
   });
   expect(snapshot.project.references.images[0].roomId).toBe('living');
-  expect(snapshot.project.items).toEqual(demo().items);
+  expect(snapshot.project.items).toEqual(referenceHome().items);
   expect(requested).toEqual([]);
   expect(errors).toEqual([]);
 });
@@ -146,8 +157,6 @@ test('approved image loading builds window photos; GLB stays free of listing ima
   await page.screenshot({
     path: testInfo.outputPath('window-reference-review.png'),
   });
-  await page.getByRole('button', { name: 'Walk through', exact: true }).click();
-  await page.getByRole('button', { name: 'Floor plan', exact: true }).click();
   const wait = page.waitForEvent('download');
   await page.locator('#export-model').click();
   const data = await readFile(await (await wait).path());
@@ -156,13 +165,49 @@ test('approved image loading builds window photos; GLB stays free of listing ima
   );
   expect(model.nodes.some((n) => n.name?.includes('Window photo'))).toBe(false);
   expect(JSON.stringify(model)).not.toContain('images.example.org');
+  expect(errors).toEqual([]);
+});
+test('reload restores reference drafts and checkpoints but resets image loading permission', async ({
+  page,
+}) => {
+  const project = referenceHome();
+  project.references = listing();
+  project.references.bindings = [
+    { imageId: 'garden', wallIndex: 0, openingIndex: 1, side: 1, flipX: false },
+  ];
+  let imageRequests = 0;
+  await page.route('https://images.example.org/**', (route) => {
+    imageRequests++;
+    return route.fulfill({
+      contentType: 'image/svg+xml',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="green"/></svg>',
+    });
+  });
+  await page.locator('#import-file').setInputFiles({
+    name: 'linked-home.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(project)),
+  });
+  await expect(page.locator('#window-links button')).toHaveCount(1);
+  await page.locator('#save-layout').click();
+  await page.locator('#load-reference-images').click();
+  await expect(page.locator('#reference-status')).toContainText(
+    '1 window photo loaded',
+  );
+  await page.locator('#window-links button').click();
+  await expect(page.locator('#window-links button')).toHaveCount(0);
+  const beforeReload = imageRequests;
   await page.reload();
   await expect(page.locator('#scene')).toHaveAttribute('data-ready', 'true');
   await page.getByRole('button', { name: 'References', exact: true }).click();
   await expect(page.locator('#load-reference-images')).toHaveText(
     'Load listing images',
   );
-  expect(errors).toEqual([]);
+  await expect(page.locator('#window-links button')).toHaveCount(0);
+  await page.locator('#reset-layout').click();
+  await expect(page.locator('#window-links button')).toHaveCount(1);
+  expect(imageRequests).toBe(beforeReload);
 });
 test('References panel stays within the sidebar in a narrow desktop window', async ({
   page,
@@ -180,7 +225,11 @@ test('supplied model geometry is a separate explicit import with provenance', as
 }) => {
   const packet = listing();
   packet.layout = {
-    project: { ...demo(), id: 'inferred-home', name: 'Inferred example' },
+    project: {
+      ...referenceHome(),
+      id: 'inferred-home',
+      name: 'Inferred example',
+    },
     confidence: 'inferred',
     basis: 'Traced fictional plan; verify every wall.',
   };

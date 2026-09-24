@@ -38,8 +38,8 @@
   "devDependencies": {
     "@modelcontextprotocol/client": "2.0.0",
     "@playwright/test": "1.63.0",
-    "eslint": "10.10.0",
-    "prettier": "3.9.6",
-    "vite": "8.2.2"
+    "eslint": "10.11.0",
+    "prettier": "3.9.8",
+    "vite": "8.3.0"
   }
 }
